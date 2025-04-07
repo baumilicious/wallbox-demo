@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallbox Steuerung</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Optional: Google Fonts einbinden (Beispiel: Roboto) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>E.ON Wallbox Steuerung</h1>
+    </header>
+    <div id="global-error-indicator" class="global-error">
+        <!-- Error message will be inserted here by JS -->
+    </div>
+    <main>
+        <nav>
+            <ul>
+                <li><a href="#ladeleistung" class="nav-link active">⚡ Ladeleistung</a></li>
+                <li><a href="#ladeinformationen" class="nav-link">📊 Ladeinformationen</a></li>
+                <li><a href="#energiemanagement" class="nav-link">💡 Energiemanagement</a></li>
+                <li><a href="#zeitplaene" class="nav-link">📅 Zeitpläne</a></li>
+                <li><a href="#benutzerverwaltung" class="nav-link">👤 Benutzerverwaltung</a></li>
+                <li><a href="#sicherheitseinstellungen" class="nav-link">🔒 Sicherheitseinstellungen</a></li>
+                <li><a href="#konnektivitaet" class="nav-link">🌐 Konnektivität</a></li>
+                <li><a href="#firmware" class="nav-link">⚙️ Firmware-Updates</a></li>
+                <li><a href="#fehlerbehebung" class="nav-link">🛠️ Fehlerbehebung</a></li>
+            </ul>
+            <div class="wallbox-bild-container">
+                 <img src="Bildschirmfoto 2025-04-07 um 18.42.40.png" alt="E.ON Wallbox" id="wallbox-bild">
+            </div>
+        </nav>
+        <div id="einstellungen">
+            <section id="ladeleistung" class="einstellungs-sektion active">
+                <h2>Ladeleistung Anpassen</h2>
+                <div class="einstellungs-layout">
+                    <div class="einstellungs-spalte">
+                        <div class="form-group">
+                            <label for="ladeleistung-range">Maximale Ladeleistung (kW):</label>
+                            <input type="range" id="ladeleistung-range" name="ladeleistung-range" min="3.7" max="22" step="0.1" value="11">
+                            <span id="ladeleistung-wert" class="range-wert">11 kW</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="ladestrom-range">Maximaler Ladestrom (A):</label>
+                            <input type="range" id="ladestrom-range" name="ladestrom-range" min="6" max="32" step="1" value="16">
+                             <span id="ladestrom-wert" class="range-wert">16 A</span>
+                        </div>
+                         <div class="form-group">
+                             <label>Schnellauswahl (Presets):</label>
+                             <div class="preset-buttons">
+                                 <button class="preset-btn" data-kw="3.7" data-a="6">Schonend (3.7kW / 6A)</button>
+                                 <button class="preset-btn" data-kw="11" data-a="16">Standard (11kW / 16A)</button>
+                                 <button class="preset-btn" data-kw="22" data-a="32">Maximal (22kW / 32A)</button>
+                             </div>
+                         </div>
+                    </div>
+                    <div class="info-spalte">
+                        <div class="info-box">
+                            <h4><span class="icon">ℹ️</span> Info & Best Practices</h4>
+                            <p>Eine niedrigere Ladeleistung schont Ihre Batterie und das Stromnetz, verlängert aber die Ladezeit. Höhere Leistungen laden schneller, können aber das Netz stärker belasten.</p>
+                            <p><strong>Tipp:</strong> Nutzen Sie nachts niedrigere Leistungen oder passen Sie die Ladung an Ihre PV-Erzeugung an (siehe Energiemanagement).</p>
+                        </div>
+                         <div class="upsell-box">
+                             <h4><span class="icon">💰</span> Sparen mit E.ON Drive Smart</h4>
+                             <p>Kombinieren Sie Ihre Wallbox mit unserem dynamischen Stromtarif und laden Sie automatisch, wenn der Strom am günstigsten ist!</p>
+                             <a href="#" class="link-mehr">Mehr erfahren</a>
+                         </div>
+                    </div>
+                </div>
+            </section>
+            <section id="ladeinformationen" class="einstellungs-sektion">
+                <h2>Aktueller Ladevorgang</h2>
+                <div class="einstellungs-layout">
+                     <div class="einstellungs-spalte">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Aktuelle Ladeleistung:</span>
+                                <span class="info-value" id="aktuelle-ladeleistung-info">-- kW</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Geladene Energie:</span>
+                                <span class="info-value" id="geladene-energie-info">-- kWh</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Verbleibende Ladezeit:</span>
+                                <span class="info-value" id="verbleibende-zeit-info">--:--</span>
+                            </div>
+                             <div class="info-item">
+                                <span class="info-label">Geschätzte Kosten:</span>
+                                <span class="info-value" id="kosten-info">-- €</span>
+                            </div>
+                             <div class="info-item">
+                                <span class="info-label">Startzeit:</span>
+                                <span class="info-value" id="startzeit-info">--:--</span>
+                            </div>
+                             <div class="info-item">
+                                <span class="info-label">Dauer:</span>
+                                <span class="info-value" id="dauer-info">--:--:--</span>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="margin-top: 2rem;">
+                             <canvas id="ladeinfo-chart"></canvas>
+                        </div>
+                    </div>
+                     <div class="info-spalte">
+                        <div class="info-box">
+                            <h4><span class="icon">💡</span> Erklärungen</h4>
+                            <p>Hier sehen Sie die Live-Daten Ihres aktuellen Ladevorgangs. Klicken Sie auf diesen Bereich, um die Simulation zu starten/stoppen (nur Demo).</p>
+                            <ul>
+                                <li><strong>Ladeleistung:</strong> Aktuelle Leistung in Kilowatt (kW).</li>
+                                <li><strong>Geladene Energie:</strong> Bisher in diesem Vorgang geladene Energiemenge in Kilowattstunden (kWh).</li>
+                                <li><strong>Verbleibende Zeit:</strong> Geschätzte Restdauer bis zur Vollladung (Ziel: 40 kWh in dieser Demo).</li>
+                                <li><strong>Kosten:</strong> Geschätzte Kosten basierend auf 0,35 €/kWh (Demo).</li>
+                            </ul>
+                        </div>
+                         <div class="upsell-box">
+                             <h4><span class="icon">📱</span> Volle Kontrolle mit der App</h4>
+                             <p>Laden Sie die E.ON Drive App herunter, um detaillierte Ladehistorien, Kostenübersichten und Fernsteuerungsoptionen zu erhalten.</p>
+                             <a href="#" class="link-mehr">Zur App</a>
+                         </div>
+                    </div>
+                </div>
+            </section>
+            <section id="energiemanagement" class="einstellungs-sektion">
+                <h2>Energiemanagement Optimieren</h2>
+                 <div class="einstellungs-layout">
+                    <div class="einstellungs-spalte">
+                        <div class="form-group">
+                            <label for="smart-home">Smart Home Integration:</label>
+                            <select id="smart-home" name="smart-home">
+                                <option value="eon-aura">E.ON Aura</option>
+                                <option value="other">Andere</option>
+                                <option value="none" selected>Keine</option>
+                            </select>
+                        </div>
+                        <fieldset class="form-group">
+                             <legend>Lastmanagement</legend>
+                             <div>
+                                <input type="checkbox" id="lastmanagement" name="lastmanagement">
+                                <label for="lastmanagement" class="inline-label">Aktivieren</label>
+                             </div>
+                             <div style="margin-top: 0.5rem;">
+                                 <label for="max-gesamtleistung" class="inline-label" style="margin-left: 2rem;">Max. Haushaltsleistung (kW):</label>
+                                 <input type="number" id="max-gesamtleistung" name="max-gesamtleistung" value="25" step="1" style="width: 80px; display: inline-block; margin-bottom: 0;">
+                             </div>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <legend>PV-Überschussladen</legend>
+                             <div>
+                                <input type="checkbox" id="solarstrom" name="solarstrom">
+                                <label for="solarstrom" class="inline-label">Aktivieren (Nur mit PV-Überschuss laden)</label>
+                            </div>
+                             <div style="margin-top: 0.5rem;">
+                                 <label for="min-pv-leistung" class="inline-label" style="margin-left: 2rem;">Mindest-PV-Überschuss (kW):</label>
+                                 <input type="number" id="min-pv-leistung" name="min-pv-leistung" value="1.4" step="0.1" style="width: 80px; display: inline-block; margin-bottom: 0;">
+                             </div>
+                             <div style="margin-top: 0.5rem;">
+                                 <label for="min-ladestrom-pv" class="inline-label" style="margin-left: 2rem;">Minimaler Ladestrom (A):</label>
+                                 <input type="number" id="min-ladestrom-pv" name="min-ladestrom-pv" value="6" step="1" style="width: 80px; display: inline-block; margin-bottom: 0;">
+                             </div>
+                        </fieldset>
+                         <button>Energiemanagement Speichern</button>
+                    </div>
+                     <div class="info-spalte">
+                         <div class="energiefluss-platzhalter">
+                             <h4>Energiefluss (Demo)</h4>
+                             <p>Netz ➔ Wallbox</p>
+                             <p>PV ➔ Haus</p>
+                             <!-- Hier könnte eine SVG-Grafik hin -->
+                         </div>
+                        <div class="info-box">
+                            <h4><span class="icon">💡</span> Erklärungen</h4>
+                            <ul>
+                               <li><strong>Lastmanagement:</strong> Begrenzt die Ladeleistung automatisch, wenn andere große Verbraucher im Haus aktiv sind, um die Hauptsicherung zu schützen.</li>
+                               <li><strong>PV-Überschussladen:</strong> Nutzt primär selbst erzeugten Solarstrom. Das Laden startet/stoppt oder passt die Leistung an, basierend auf dem verfügbaren Überschuss.</li>
+                            </ul>
+                        </div>
+                         <div class="upsell-box">
+                             <h4><span class="icon">☀️</span> Mehr Unabhängigkeit mit E.ON Aura</h4>
+                             <p>Maximieren Sie Ihren Eigenverbrauch! Speichern Sie überschüssigen Solarstrom mit dem E.ON Aura Speicher und laden Sie Ihr Auto auch nachts mit Sonnenenergie.</p>
+                             <a href="#" class="link-mehr">Mehr zum Aura Speicher</a>
+                         </div>
+                    </div>
+                </div>
+            </section>
+            <section id="zeitplaene" class="einstellungs-sektion">
+                <h2>Zeitpläne</h2>
+                 <div class="form-group">
+                    <label for="zeitplan-aktiv">Zeitpläne aktivieren:</label>
+                    <input type="checkbox" id="zeitplan-aktiv" name="zeitplan-aktiv">
+                 </div>
+                 <div class="zeitplan-eintrag">
+                    <label>Montag - Freitag:</label>
+                    <input type="time" id="zeitplan-mofr-start" name="zeitplan-mofr-start">
+                    <span> bis </span>
+                    <input type="time" id="zeitplan-mofr-ende" name="zeitplan-mofr-ende">
+                 </div>
+                 <div class="zeitplan-eintrag">
+                    <label>Samstag - Sonntag:</label>
+                    <input type="time" id="zeitplan-saso-start" name="zeitplan-saso-start">
+                    <span> bis </span>
+                    <input type="time" id="zeitplan-saso-ende" name="zeitplan-saso-ende">
+                 </div>
+                 <button style="margin-top: 1rem;">Zeitplan hinzufügen</button>
+            </section>
+            <section id="benutzerverwaltung" class="einstellungs-sektion">
+                <h2>Benutzerverwaltung</h2>
+                <div class="form-group">
+                    <label for="benutzername">Benutzername:</label>
+                    <input type="text" id="benutzername" name="benutzername" value="Hauptnutzer">
+                </div>
+                <div class="form-group">
+                    <label for="passwort">Passwort ändern:</label>
+                    <input type="password" id="passwort" name="passwort" placeholder="Neues Passwort">
+                </div>
+                <div class="form-group">
+                    <label>RFID-Authentifizierung:</label>
+                    <div>
+                        <input type="checkbox" id="rfid" name="rfid" checked>
+                        <label for="rfid" class="inline-label">RFID-Karte für Ladevorgang erforderlich</label>
+                    </div>
+                </div>
+                <button>Benutzer hinzufügen</button>
+            </section>
+            <section id="sicherheitseinstellungen" class="einstellungs-sektion">
+                <h2>Sicherheitseinstellungen</h2>
+                <div class="form-group">
+                    <label>PIN-Code Schutz:</label>
+                    <div>
+                        <input type="checkbox" id="pin-schutz" name="pin-schutz">
+                        <label for="pin-schutz" class="inline-label">Einstellungen mit PIN schützen</label>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label for="pin-code">PIN-Code:</label>
+                    <input type="password" id="pin-code" name="pin-code" placeholder="4-stellige PIN">
+                </div>
+                <div class="form-group">
+                    <label>Temperaturüberwachung:</label>
+                     <div>
+                        <input type="checkbox" id="temperatur" name="temperatur" checked>
+                        <label for="temperatur" class="inline-label">Wallbox bei Überhitzung abschalten</label>
+                    </div>
+                </div>
+            </section>
+            <section id="konnektivitaet" class="einstellungs-sektion">
+                <h2>Konnektivität</h2>
+                <div class="form-group">
+                    <label for="wlan-ssid">WLAN Netzwerk (SSID):</label>
+                    <input type="text" id="wlan-ssid" name="wlan-ssid" placeholder="Netzwerkname">
+                </div>
+                 <div class="form-group">
+                    <label for="wlan-passwort">WLAN Passwort:</label>
+                    <input type="password" id="wlan-passwort" name="wlan-passwort">
+                </div>
+                 <div class="form-group">
+                    <label>Ethernet (LAN):</label>
+                    <p>Status: <span id="lan-status">Verbunden</span></p>
+                    <p>IP-Adresse: <span id="lan-ip">192.168.1.100</span></p>
+                </div>
+                <button>Netzwerkeinstellungen speichern</button>
+            </section>
+            <section id="firmware" class="einstellungs-sektion">
+                <h2>Firmware-Updates</h2>
+                <p>Aktuelle Version: <span id="firmware-version">2.1.3</span></p>
+                <p>Letzte Prüfung: <span id="firmware-check">Heute, 10:15 Uhr</span></p>
+                <button id="firmware-update-btn">Nach Updates suchen</button>
+                <p id="firmware-status" style="margin-top: 1rem;"></p>
+            </section>
+            <section id="fehlerbehebung" class="einstellungs-sektion">
+                <h2>Fehlerbehebung</h2>
+                 <div class="form-group">
+                    <label>Aktueller Status:</label>
+                    <p><strong id="fehler-status-anzeige">Keine Fehler</strong></p>
+                </div>
+                <div class="form-group">
+                    <label for="log-level">Log-Level:</label>
+                    <select id="log-level" name="log-level">
+                        <option value="error">Nur Fehler</option>
+                        <option value="warn">Warnungen</option>
+                        <option value="info" selected>Informationen</option>
+                        <option value="debug">Debug</option>
+                    </select>
+                </div>
+                <button>Logs herunterladen</button>
+                <button id="fehler-reset-btn" style="margin-left: 1rem;">Fehler zurücksetzen</button>
+                <button id="fehler-simulieren-btn" style="margin-left: 1rem; background-color: var(--secondary-color);">Fehler simulieren</button>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 E.ON Drive</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

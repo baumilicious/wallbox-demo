@@ -1,0 +1,436 @@
+:root {
+    --primary-color: #28a745; /* E.ON Green */
+    --secondary-color: #6c757d; /* Medium Gray */
+    --light-gray: #f8f9fa;
+    --medium-light-gray: #f1f3f5;
+    --dark-gray: #495057;
+    --white: #fff;
+    --border-color: #dee2e6;
+    --hover-bg: #e9ecef;
+    --info-bg: #e2f0e6; /* Light green for info boxes */
+    --upsell-bg: #fff3cd; /* Light yellow for upsell */
+    --error-bg: #f8d7da; /* Light red for errors */
+    --error-border: #f5c6cb;
+    --error-text: #721c24;
+    --font-family: 'Roboto', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 1rem 2rem;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    position: relative; /* Needed for z-index if error overlaps */
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Global Error Indicator */
+.global-error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+    padding: 0.75rem 2rem;
+    text-align: center;
+    font-weight: 700;
+    display: none; /* Hidden by default, shown by JS */
+    position: sticky; /* Keep visible when scrolling */
+    top: 0;
+    z-index: 5; /* Below header */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+main {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    /* Adjust top padding if error banner is sticky and overlaps */
+    /* padding-top: 2rem; */
+}
+
+nav {
+    width: 220px;
+    background-color: var(--white);
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem 1rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+nav li {
+    margin-bottom: 0.5rem;
+}
+
+nav a.nav-link {
+    text-decoration: none;
+    color: var(--dark-gray);
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    font-weight: 400;
+}
+
+nav a.nav-link:hover {
+    background-color: var(--hover-bg);
+    color: #000;
+}
+
+nav a.nav-link.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.wallbox-bild-container {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+#wallbox-bild {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin: 0 auto;
+}
+
+
+#einstellungen {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: var(--medium-light-gray);
+}
+
+.einstellungs-sektion {
+    display: none;
+    background-color: var(--white);
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.einstellungs-sektion.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: var(--white);
+    border-top: 1px solid var(--border-color);
+    color: var(--secondary-color);
+    font-size: 0.9em;
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+/* --- Section Specific Layouts & Styles --- */
+
+/* Layout for sections with settings and info side-by-side */
+.einstellungs-layout {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.einstellungs-spalte {
+    flex: 2;
+    min-width: 300px;
+}
+
+.info-spalte {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Info Box Styling */
+.info-box, .upsell-box {
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.info-box {
+    background-color: var(--info-bg);
+    border: 1px solid #b8dbca;
+}
+
+.upsell-box {
+     background-color: var(--upsell-bg);
+     border: 1px solid #ffeeba;
+}
+
+.info-box h4, .upsell-box h4 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    font-size: 1.1em;
+}
+
+.info-box .icon, .upsell-box .icon {
+    margin-right: 0.5rem;
+    font-size: 1.1em;
+}
+
+.info-box ul {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+}
+
+.info-box li {
+    margin-bottom: 0.25rem;
+}
+
+.link-mehr {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+.link-mehr:hover {
+    text-decoration: underline;
+}
+
+
+/* Ladeleistung Specific Styles */
+.range-wert {
+    display: inline-block;
+    min-width: 50px;
+    text-align: right;
+    font-weight: 700;
+    margin-left: 10px;
+    vertical-align: middle;
+    color: var(--primary-color);
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    background-color: var(--hover-bg);
+    color: var(--dark-gray);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    font-weight: 400;
+    flex-grow: 1;
+}
+
+.preset-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    border-color: var(--secondary-color);
+}
+
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+fieldset.form-group {
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+}
+
+legend {
+    font-weight: 700;
+    color: var(--dark-gray);
+    padding: 0 0.5rem;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    font-size: 0.95em;
+}
+
+label.inline-label {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-weight: 400;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="time"],
+select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+    background-color: var(--white);
+    color: var(--dark-gray);
+}
+
+input[type="range"] {
+    width: calc(100% - 70px);
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #218838;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Info Grid Styling */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    background-color: var(--light-gray);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.info-label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+}
+
+.info-value {
+    display: block;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+/* Zeitplan Styling */
+.zeitplan-eintrag {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: var(--light-gray);
+    border-radius: 4px;
+}
+
+.zeitplan-eintrag label {
+    margin-bottom: 0;
+    min-width: 120px;
+}
+
+.zeitplan-eintrag input[type="time"] {
+    width: auto;
+    margin-bottom: 0;
+}
+
+/* Charging Indicator */
+#ladeinformationen.charging .info-item {
+    border-left: 5px solid var(--primary-color);
+    transition: border-left 0.5s ease-in-out;
+}
+
+/* Energiefluss Platzhalter */
+.energiefluss-platzhalter {
+    background-color: var(--hover-bg);
+    border: 1px dashed var(--secondary-color);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+    color: var(--secondary-color);
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.energiefluss-platzhalter h4 {
+    margin-top: 0;
+    color: var(--dark-gray);
+}
