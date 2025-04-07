@@ -1,8 +1,8 @@
-# E.ON Wallbox Control Panel - Error Handling Demo
+# Wallbox Control Panel - Error Handling Demo
 
 ## Purpose
 
-This project provides a static frontend mockup of an E.ON Wallbox web interface. Its primary goal is to demonstrate a customer support scenario where an agent guides a user through identifying and resetting a simulated Wallbox error via the interface.
+This project provides a static frontend mockup of a Wallbox web interface. Its primary goal is to demonstrate a customer support scenario where an agent guides a user through identifying and resetting a simulated Wallbox error via the interface.
 
 It showcases how an error state is presented to the user and how it can be resolved through the troubleshooting section.
 
